@@ -27,3 +27,14 @@ Execute the script to watch the folder:
 cd scripts
 python monitor_folder.py
 ```
+
+## Prerequisites
+
+In order to scan the images for people, you need to have a server accepting the image and a model that scans it. For convenience we will use [this docker image](https://hub.docker.com/r/codait/max-object-detector).
+
+```bash
+git clone https://github.com/IBM/MAX-Object-Detector.git object_detector
+cd object_detector
+docker build -t object-detector .
+docker run -it -p 5000:5000 -e DISABLE_WEB_APP=true object-detector
+```
