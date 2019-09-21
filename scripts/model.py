@@ -1,9 +1,21 @@
 import os
 import cv2
-import sys
 import json
-from client import get_predictions
+import requests
 from dotenv import load_dotenv
+
+load_dotenv() 
+
+def get_predictions(imagePath, threshold):
+    url = os.getenv("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
+    files = {'image': open(imagePath, 'rb')}
+    response = requests.post(url, files=files)
+
+    if response.status_code == 200:
+        # Predictions will be an empty array if nothing is found
+        return json.loads(response.content)['predictions']
+    else:
+        print("error" + str(response))
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
@@ -17,8 +29,7 @@ def draw_box(detection_box, label, img):
     cv2.putText(img,label,(left+5,top+10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1, cv2.LINE_AA)
     return
 
-def model_detect(path, output_path):
-    load_dotenv()
+def analyse_image(path, output_path):
     # Import the image
     img = cv2.imread(path)
 
