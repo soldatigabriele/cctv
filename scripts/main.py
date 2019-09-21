@@ -18,13 +18,14 @@ def drawBox(detection_box, label, img):
     return
 
 class Predictor:
-    def detect(self, path, base_path):
+    def detect(self, path, output_path):
         load_dotenv()
         # Import the image
         img = cv2.imread(path)
 
+        resize_ratio = float(os.getenv("MODEL_RESIZE_RATIO"))
         # Resize the image to make the process faster
-        img = cv2.resize(img, None, fx=0.5, fy=0.5)
+        img = cv2.resize(img, None, fx=resize_ratio, fy=resize_ratio)
 
         # Get the predictions
         model = detection.Model()
@@ -32,15 +33,20 @@ class Predictor:
         predictions = model.detect(path, threshold)
 
         # Check if the predictions contain person, if so send the notification
-        person_found = False
+        match_found = False
         for prediction in predictions:
-            # Draw the bounding box around the objects
-            if prediction['label'] == 'person':
-                drawBox(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
-                if not os.path.exists(base_path + "/detected"):
-                    os.mkdir(base_path + "/detected")
-                # generate the new path name
-                path = person_found = base_path + '/detected/' + os.path.basename(path)
-                cv2.imwrite(path, img) 
+            labels_list = os.getenv("MODEL_LABELS")
+            if labels_list is None:
+                labels_list = 'all'
+            labels_list = labels_list.split(",")
+            for label in labels_list:
+                # Draw the bounding box around the objects
+                if prediction['label'] == label or label == 'all':
+                    drawBox(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
+                    if not os.path.exists(output_path + "/detected"):
+                        os.mkdir(output_path + "/detected")
+                    # generate the new path name
+                    path = match_found = output_path + '/detected/' + os.path.basename(path)
+                    cv2.imwrite(path, img) 
 
-        return person_found
+        return match_found
