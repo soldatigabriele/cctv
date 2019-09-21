@@ -25,8 +25,8 @@ class Predictor:
         img = cv2.resize(img, None, fx=0.5, fy=0.5)
 
         # Get the predictions
-        model = detection.Model
-        predictions = model.detect(model, path, 0.5)
+        model = detection.Model()
+        predictions = model.detect(path, 0.5)
 
         # Check if the predictions contain person, if so send the notification
         person_found = False

@@ -59,13 +59,13 @@ def moveNewFiles():
         # We have now /output/91520328263175/video.h264
 
         # Instantiate the video helper to extract the frames
-        video_helper = videoHelper.Helper
-        video_helper.extractFrames(video_helper, video_folder + "/video.h264", frames_folder, 28)
+        video_helper = videoHelper.Helper()
+        video_helper.extractFrames(video_folder + "/video.h264", frames_folder, 28)
         outcome = False
         for frame in getListOfFiles(frames_folder):
             print("examinating next frame")
-            model = main.Predictor
-            outcome = model.detect(model, frame, video_folder)
+            model = main.Predictor()
+            outcome = model.detect(frame, video_folder)
             print(outcome)
             if outcome:
                 break
