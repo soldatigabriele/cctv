@@ -50,6 +50,7 @@ def analyse_image(path, output_path):
         for label in labels_list:
             # Draw the bounding box around the objects
             if prediction['label'] == label or label == 'all':
+                print(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
                 draw_box(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
                 if not os.path.exists(output_path + "/detected"):
                     os.mkdir(output_path + "/detected")

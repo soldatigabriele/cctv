@@ -52,12 +52,12 @@ def process():
             print("analysing: " + frame)
             outcome = analyse_image(frame, video_folder)
             if outcome:
-                print("found person")
+                print("object found")
                 break
 
         # If the outcome is not True, delete the folder with the video and frames
         if not outcome:
-            print('No human found. Removing folder')
+            print('No object found. Removing folder')
             shutil.rmtree(video_folder, ignore_errors=True)
 
         return outcome
