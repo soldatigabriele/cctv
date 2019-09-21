@@ -27,10 +27,16 @@ def getListOfFiles(dirName):
                 allFiles.append(fullPath)
     return allFiles
 
+def getEnvValue(envVariable):
+    value = os.getenv(envVariable)
+    if(value is None or value==""):
+        print('Set the path to the folder you want to monitor in the .env file')
+        exit()
+    return value
+
 def moveNewFiles():
     # Current path
-    # TODO source = os.getenv("SOURCE_PATH")
-    source = os.getcwd() + "/../video/cctv/"
+    source = getEnvValue("SOURCE_PATH")
     output_folder = os.getcwd() + "/../video/output/"
     # take the new video and move it to a output folder
     for video in getListOfFiles(source):
