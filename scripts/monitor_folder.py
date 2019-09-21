@@ -63,15 +63,16 @@ def moveNewFiles():
         video_helper.extractFrames(video_folder + "/video.h264", frames_folder, 28)
         outcome = False
         for frame in getListOfFiles(frames_folder):
-            print("examinating next frame")
+            print("examinating: " + frame)
             model = main.Predictor()
             outcome = model.detect(frame, video_folder)
-            print(outcome)
             if outcome:
+                print("found person")
                 break
 
         # If the outcome is not True, delete the folder with the video and frames
         if not outcome:
+            print('No human found. Removing folder')
             shutil.rmtree(video_folder, ignore_errors=True)
 
         return outcome
