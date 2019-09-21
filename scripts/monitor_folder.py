@@ -61,7 +61,7 @@ def moveNewFiles():
 
         # Instantiate the video helper to extract the frames
         video_helper = videoHelper.Helper()
-        frames_interval = getEnvValue("FRAMES_INTERVAL")
+        frames_interval = int(getEnvValue("FRAMES_INTERVAL"))
         video_helper.extractFrames(video_folder + "/video.h264", frames_folder, frames_interval)
         outcome = False
         for frame in getListOfFiles(frames_folder):
