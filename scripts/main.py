@@ -42,13 +42,17 @@ def process():
         os.mkdir(video_folder)
         frames_folder = video_folder + "/frames"
         os.mkdir(frames_folder)
-        os.rename(video, video_folder + "/video.h264")
+        video_name = video.split('/')[-1]
+        os.rename(video, video_folder + "/" + video_name)
         # We have now /output/91520328263175/video.h264
 
         # Instantiate the video helper to extract the frames
-        extract_frames(video_folder + "/video.h264", frames_folder, int(get_env_value("FRAMES_INTERVAL")))
+        extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
         outcome = False
-        for frame in get_list_of_files(frames_folder):
+        # Get the list of frames, so we can order and analyse them
+        frames = get_list_of_files(frames_folder)
+        frames.sort(key=lambda f: os.path.getmtime(f))
+        for frame in frames:
             print("analysing: " + frame)
             outcome = analyse_image(frame, video_folder)
             if outcome:
@@ -70,4 +74,4 @@ while True:
     # If the outcome is positive, send a notification
     if outcome:
         notify(outcome)
-    time.sleep(4)
+    time.sleep(2)
