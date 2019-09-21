@@ -3,6 +3,7 @@ import cv2
 import sys
 import json
 import detection
+from dotenv import load_dotenv
 
 # Draw the bounding box around the objects found
 def drawBox(detection_box, label, img):
@@ -18,6 +19,7 @@ def drawBox(detection_box, label, img):
 
 class Predictor:
     def detect(self, path, base_path):
+        load_dotenv()
         # Import the image
         img = cv2.imread(path)
 
@@ -26,13 +28,14 @@ class Predictor:
 
         # Get the predictions
         model = detection.Model()
-        predictions = model.detect(path, 0.5)
+        threshold = float(os.getenv("MODEL_THRESHOLD"))
+        predictions = model.detect(path, threshold)
 
         # Check if the predictions contain person, if so send the notification
         person_found = False
         for prediction in predictions:
             # Draw the bounding box around the objects
-            if prediction['label'] == 'person' and prediction['probability'] >= 0.5 :
+            if prediction['label'] == 'person':
                 drawBox(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
                 if not os.path.exists(base_path + "/detected"):
                     os.mkdir(base_path + "/detected")

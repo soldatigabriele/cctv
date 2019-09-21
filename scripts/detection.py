@@ -1,9 +1,12 @@
-import requests
+import os
 import json
+import requests
+from dotenv import load_dotenv
 
 class Model:
     def detect(self, imagePath, threshold):
-        url = 'http://localhost:5000/model/predict?threshold=' + str(threshold)
+        load_dotenv() 
+        url = os.getenv("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
         files = {'image': open(imagePath, 'rb')}
         response = requests.post(url, files=files)
 
