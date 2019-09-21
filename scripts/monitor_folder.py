@@ -5,8 +5,10 @@ import main
 import time
 import shutil
 import datetime
+import os.path as path
 import video as videoHelper
 from dotenv import load_dotenv
+from notification import notify
 
 load_dotenv()
 
@@ -34,6 +36,14 @@ def getEnvValue(envVariable):
         exit()
     return value
 
+def isFileOlderThanXDays(file, days=1): 
+    file_time = path.getmtime(file) 
+    # Check against 24 hours 
+    if (time.time() - file_time) / 3600 > 24*days: 
+        return True
+    else: 
+        return False
+
 def moveNewFiles():
     # Current path
     source = getEnvValue("SOURCE_PATH")
@@ -47,27 +57,28 @@ def moveNewFiles():
         os.mkdir(frames_folder)
         os.rename(video, video_folder + "/video.h264")
         # We have now /output/91520328263175/video.h264
-        
+
         # Instantiate the video helper to extract the frames
         video_helper = videoHelper.Helper
-        video_helper.extractFrames(video_helper, video_folder + "/video.h264", frames_folder)
+        video_helper.extractFrames(video_helper, video_folder + "/video.h264", frames_folder, 28)
         outcome = False
         for frame in getListOfFiles(frames_folder):
             print("examinating next frame")
             model = main.Predictor
             outcome = model.detect(model, frame, video_folder)
+            print(outcome)
             if outcome:
-                print('Person found!')
-                person_found = True
                 break
-            else:
-                print('no person found')
 
-        # if outcome is not True, delete the folder with the video and frames
-        print("person_found?")
-        print(person_found)
+        # If the outcome is not True, delete the folder with the video and frames
+        if not outcome:
+            shutil.rmtree(video_folder, ignore_errors=True)
 
+        return outcome
+    return None
 
 while True:
-    moveNewFiles()
+    photo = moveNewFiles()
+    if photo:
+        notify(photo)
     time.sleep(4)

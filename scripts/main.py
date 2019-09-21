@@ -3,7 +3,6 @@ import cv2
 import sys
 import json
 import detection
-from notification import notify
 
 # Draw the bounding box around the objects found
 def drawBox(detection_box, label, img):
@@ -35,12 +34,10 @@ class Predictor:
             # Draw the bounding box around the objects
             if prediction['label'] == 'person' and prediction['probability'] >= 0.5 :
                 drawBox(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
-                person_found = True
                 if not os.path.exists(base_path + "/detected"):
                     os.mkdir(base_path + "/detected")
                 # generate the new path name
-                path = base_path + '/detected/' + os.path.basename(path)
+                path = person_found = base_path + '/detected/' + os.path.basename(path)
                 cv2.imwrite(path, img) 
-                notify(path, 'Intruder identified')
 
         return person_found
