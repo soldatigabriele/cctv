@@ -3,11 +3,10 @@ import cv2
 import json
 import requests
 from dotenv import load_dotenv
-
-load_dotenv() 
+from settings import get_env_value 
 
 def get_predictions(imagePath, threshold):
-    url = os.getenv("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
+    url = get_env_value("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
     files = {'image': open(imagePath, 'rb')}
     response = requests.post(url, files=files)
 
@@ -33,18 +32,18 @@ def analyse_image(path, output_path):
     # Import the image
     img = cv2.imread(path)
 
-    resize_ratio = float(os.getenv("MODEL_RESIZE_RATIO"))
+    resize_ratio = float(get_env_value("MODEL_RESIZE_RATIO"))
     # Resize the image to make the process faster
     img = cv2.resize(img, None, fx=resize_ratio, fy=resize_ratio)
 
     # Get the predictions
-    threshold = float(os.getenv("MODEL_THRESHOLD"))
+    threshold = float(get_env_value("MODEL_THRESHOLD"))
     predictions = get_predictions(path, threshold)
 
     # Check if the predictions contain person, if so send the notification
     match_found = False
     for prediction in predictions:
-        labels_list = os.getenv("MODEL_LABELS")
+        labels_list = get_env_value("MODEL_LABELS")
         if labels_list is None:
             labels_list = 'all'
         labels_list = labels_list.split(",")

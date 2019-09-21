@@ -25,7 +25,7 @@ Execute the script to watch the folder:
 
 ```bash
 cd scripts
-python monitor_folder.py
+python main.py
 ```
 
 ## Prerequisites
