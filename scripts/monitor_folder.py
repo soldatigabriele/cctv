@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import subprocess
 import os
-import main
 import time
 import shutil
 import datetime
 import os.path as path
+from model import model_detect
 import video as videoHelper
 from dotenv import load_dotenv
 from notification import notify
@@ -66,8 +66,7 @@ def moveNewFiles():
         outcome = False
         for frame in getListOfFiles(frames_folder):
             print("examinating: " + frame)
-            model = main.Predictor()
-            outcome = model.detect(frame, video_folder)
+            outcome = model_detect(frame, video_folder)
             if outcome:
                 print("found person")
                 break
