@@ -57,12 +57,13 @@ def prepare_video(video, output_folder):
         for frame in frames:
             frame_name = frame.split('/')[-1]
             img = cv2.imread(frame)
-            shape = img.shape
-            height = img.shape[0]
-            width = img.shape[1]
-            crop_img = img[100:height, 0:width-400]
-            # Save the cropped image
-            cv2.imwrite(resized_frames_folder + '/' + frame_name, crop_img)
+            if img is not None:
+                shape = img.shape
+                height = img.shape[0]
+                width = img.shape[1]
+                crop_img = img[100:height, 0:width-400]
+                # Save the cropped image
+                cv2.imwrite(resized_frames_folder + '/' + frame_name, crop_img)
         frames = get_list_of_files(resized_frames_folder)
         frames.sort(key=lambda f: os.path.getmtime(f))
 
