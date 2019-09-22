@@ -38,7 +38,7 @@ def analyse_image(path, output_path):
 
     # Get the predictions
     threshold = float(get_env_value("MODEL_THRESHOLD"))
-    predictions = get_predictions(path, 0.1)
+    predictions = get_predictions(path, threshold)
 
     # Check if the predictions contain person, if so send the notification
     match_found = False
@@ -50,7 +50,7 @@ def analyse_image(path, output_path):
         labels_list = labels_list.split(",")
         for label in labels_list:
             # Draw the bounding box around the objects
-            if prediction['label'] == label or label == 'all' and prediction['probability'] >= threshold:
+            if prediction['label'] == label or label == 'all':
                 draw_box(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
                 if not os.path.exists(output_path + "/detected"):
                     os.mkdir(output_path + "/detected")
