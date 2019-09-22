@@ -8,50 +8,16 @@ import datetime
 from settings import * 
 import os.path as path
 from model import analyse_image
+from video import prepare_video
 from notification import notify
 
-def extract_frames(video_path, output_path, frames_interval = 24):
-    vc = cv2.VideoCapture(video_path)
-    c=1
-    name = 1
-
-    if vc.isOpened():
-        rval , frame = vc.read()
-    else:
-        rval = False
-
-    while rval:
-        rval, frame = vc.read()
-        # Here we set the frames to take (24 means 1 frame every 24, so 1 per second in our stream)
-        if c%(frames_interval) == 0 :
-            cv2.imwrite(output_path +'/'+ str(name) + '.jpg',frame)
-            cv2.waitKey(1)
-            name = name + 1
-        c = c + 1
-    vc.release()
-
 def process():
-    # Current path
-    source = get_env_value("SOURCE_PATH")
     output_folder = os.getcwd() + "/../video/output/"
-    # take the new video and move it to a output folder
-    for video in get_list_of_files(source):
-        datetime_object = datetime.datetime.now()
-        print("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-        video_folder = output_folder + str(datetime_object.month) + str(datetime_object.day) + str(datetime_object.hour) + str(datetime_object.minute) + str(datetime_object.second) + str(datetime_object.microsecond)
-        os.mkdir(video_folder)
-        frames_folder = video_folder + "/frames"
-        os.mkdir(frames_folder)
-        video_name = video.split('/')[-1]
-        os.rename(video, video_folder + "/" + video_name)
-        # We have now /output/91520328263175/video.h264
-
-        # Instantiate the video helper to extract the frames
-        extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
+    # Take the new video and move it to the output folder
+    for video in get_list_of_files(get_env_value("SOURCE_PATH")):
+        video_folder, frames = prepare_video(video, output_folder)
+        # Now that we have extracted the frames from the video, let's start the analysis 
         outcome = False
-        # Get the list of frames, so we can order and analyse them
-        frames = get_list_of_files(frames_folder)
-        frames.sort(key=lambda f: os.path.getmtime(f))
         for frame in frames:
             print("analysing: " + frame)
             outcome = analyse_image(frame, video_folder)
