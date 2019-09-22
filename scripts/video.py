@@ -3,7 +3,6 @@ import subprocess
 import os
 import cv2
 import time
-# import json
 import shutil
 import datetime
 from settings import * 
@@ -66,12 +65,5 @@ def prepare_video(video, output_folder):
                 cv2.imwrite(resized_frames_folder + '/' + frame_name, crop_img)
         frames = get_list_of_files(resized_frames_folder)
         frames.sort(key=lambda f: os.path.getmtime(f))
-
-    # # Save the metadata
-    # info = {}
-    # info['camera'] = camera
-    # info['name'] = video_name
-    # with open(video_folder + '/info.json', 'w') as outfile:
-    #     json.dump(info, outfile)
 
     return video_folder, frames

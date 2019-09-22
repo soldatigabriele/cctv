@@ -28,7 +28,6 @@ def get_predictions(imagePath, threshold):
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
-    # img = cv2.imread(path)
     height, width, channels = img.shape
     top= int(detection_box[0] * height)
     left= int(detection_box[1] * width)
@@ -50,7 +49,7 @@ def analyse_image(path, output_path):
     threshold = float(get_env_value("MODEL_THRESHOLD"))
     predictions = get_predictions(path, threshold)
 
-    # Check if the predictions contain person, if so send the notification
+    # Check if the predictions contain person, if so return the path to the image
     match_found = False
     for prediction in predictions:
         print(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
