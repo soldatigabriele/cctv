@@ -2,19 +2,29 @@ import os
 import cv2
 import json
 import requests
+from yolo import yolo
 from dotenv import load_dotenv
 from settings import get_env_value 
 
 def get_predictions(imagePath, threshold):
-    url = get_env_value("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
-    files = {'image': open(imagePath, 'rb')}
-    response = requests.post(url, files=files)
+    if get_env_value("MODEL_DRIVER") == "max_object_detector":
+        url = get_env_value("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
+        files = {'image': open(imagePath, 'rb')}
+        response = requests.post(url, files=files)
 
-    if response.status_code == 200:
-        # Predictions will be an empty array if nothing is found
-        return json.loads(response.content)['predictions']
-    else:
-        print("error" + str(response))
+        if response.status_code == 200:
+            # Predictions will be an empty array if nothing is found
+            return json.loads(response.content)['predictions']
+        else:
+            print("error" + str(response))
+
+    if get_env_value("MODEL_DRIVER") == "yolo":
+        response = yolo(imagePath, threshold, 0.5, get_env_value("MODEL_LOCATION"))
+        if response["status"] == "ok":
+            # Predictions will be an empty array if nothing is found
+            return response["predictions"]
+        else:
+            print("error" + str(response))
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
@@ -25,7 +35,7 @@ def draw_box(detection_box, label, img):
     bottom= int(detection_box[2] * height)
     right= int(detection_box[3] * width)
     cv2.rectangle(img, (left, top), (right, bottom), (0, 0, 255), 1)
-    cv2.putText(img,label,(left+5,top+10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1, cv2.LINE_AA)
+    cv2.putText(img,label,(left,top-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
     return
 
 def analyse_image(path, output_path):
