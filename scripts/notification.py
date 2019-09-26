@@ -6,6 +6,13 @@ import telegram
 import datetime
 from settings import *
 
+def send_message(message="",):
+    if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
+        bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
+        bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), message)
+    else:
+        print(message)
+
 def send_photo(photo, caption=""):
     if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
@@ -26,9 +33,9 @@ def send_animation(photo, caption=""):
             try:
                 bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
             except:
-                msg = "Gif is too big to be sent"
+                msg = photo + "is too big to be sent"
                 print(msg)
-                bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), msg)
+                send_message(msg)
     else:
         print('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 

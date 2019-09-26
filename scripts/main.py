@@ -35,9 +35,13 @@ def process():
 
 # Start the loop
 while True:
-    # Analyse the new video
-    outcome = process()
-    # If the outcome is positive, send a notification
-    if outcome:
-        notify(outcome)
-    time.sleep(2)
+    try:
+        # Analyse the new video
+        outcome = process()
+        # If the outcome is positive, send a notification
+        if outcome:
+            notify(outcome)
+    except:
+        send_message("An error occurred at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        time.sleep(60)
+    time.sleep(1)
