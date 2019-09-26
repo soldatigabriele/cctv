@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
-import subprocess
 import os
 import cv2
-import time
-import shutil
 import datetime
 from settings import * 
 import os.path as path
-from model import analyse_image
 from notification import notify
 
 def extract_frames(video_path, output_path, frames_interval = 24):

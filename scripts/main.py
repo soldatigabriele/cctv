@@ -9,7 +9,7 @@ from settings import *
 import os.path as path
 from model import analyse_image
 from video import prepare_video
-from notification import notify
+from notification import *
 
 def process():
     output_folder = os.getcwd() + "/../video/output/"
