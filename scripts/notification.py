@@ -10,7 +10,8 @@ def send_photo(photo, caption=""):
     if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        bot.send_photo(get_env_value("TELEGRAM_CHAT_ID"), photo=open(photo, 'rb'), caption=caption)
+        if photo is not None: 
+            bot.send_photo(get_env_value("TELEGRAM_CHAT_ID"), photo=open(photo, 'rb'), caption=caption)
     if get_env_value("NOTIFICATION_DRIVER") == 'python':
         cv2.imshow('image', cv2.imread(photo))
     else:
@@ -21,7 +22,8 @@ def send_animation(photo, caption=""):
     if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
+        if photo is not None: 
+            bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
     else:
         print('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
@@ -57,7 +59,7 @@ def prepare_gif(photo):
 
     gif = path + "/test.gif"
     imageio.mimsave(gif, images)
-    send_animation(gif)
+    return gif
 
 def notify(photo, caption=""):
     # Send the photo to telegram
