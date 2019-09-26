@@ -23,7 +23,12 @@ def send_animation(photo, caption=""):
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if photo is not None: 
-            bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
+            try:
+                bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
+            except:
+                msg = "Gif is too big to be sent"
+                print(msg)
+                bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), msg)
     else:
         print('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
