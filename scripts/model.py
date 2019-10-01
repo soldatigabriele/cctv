@@ -4,8 +4,8 @@ import json
 import requests
 from ssd import ssd
 from yolo import yolo
+from settings import * 
 from dotenv import load_dotenv
-from settings import get_env_value 
 
 def get_predictions(imagePath, threshold):
     if get_env_value("MODEL_DRIVER") == "max_object_detector":
@@ -17,7 +17,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return json.loads(response.content)['predictions']
         else:
-            print("error" + str(response))
+            log("error" + str(response))
 
     if get_env_value("MODEL_DRIVER") == "ssd":
         response = ssd(imagePath, threshold)
@@ -25,7 +25,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
         else:
-            print("error" + str(response))
+            log("error" + str(response))
 
     if get_env_value("MODEL_DRIVER") == "yolo":
         response = yolo(imagePath, threshold, 0.5, get_env_value("MODEL_LOCATION"))
@@ -33,7 +33,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
         else:
-            print("error" + str(response))
+            log("error" + str(response))
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
@@ -61,7 +61,7 @@ def analyse_image(path, output_path):
     # Check if the predictions contain person, if so return the path to the image
     match_found = False
     for prediction in predictions:
-        print(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
+        log(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
         labels_list = get_env_value("MODEL_LABELS")
         if labels_list is None:
             labels_list = 'all'

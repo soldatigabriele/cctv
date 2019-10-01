@@ -1,3 +1,4 @@
+from settings import *
 import numpy as np
 import time
 import cv2
@@ -18,7 +19,6 @@ def yolo(image_path, max_threshold=0.3,  max_confidence=0.5, yolo_location="yolo
     configPath = os.path.sep.join([yolo_location, "yolov3.cfg"])
 
     # load our YOLO object detector trained on COCO dataset (80 classes)
-    print("[INFO] loading YOLO from disk...")
     net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 
     # load our input image and grab its spatial dimensions
@@ -36,12 +36,12 @@ def yolo(image_path, max_threshold=0.3,  max_confidence=0.5, yolo_location="yolo
     blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416),
         swapRB=True, crop=False)
     net.setInput(blob)
-    start = time.time()
+    # start = time.time()
     layerOutputs = net.forward(ln)
-    end = time.time()
+    # end = time.time()
 
     # show timing information on YOLO
-    print("[INFO] YOLO took {:.6f} seconds".format(end - start))
+    # print("[INFO] YOLO took {:.6f} seconds".format(end - start))
 
     # initialize our lists of detected bounding boxes, confidences, and
     # class IDs, respectively

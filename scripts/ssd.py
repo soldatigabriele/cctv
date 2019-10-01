@@ -3,11 +3,12 @@
 # --prototxt MobileNetSSD_deploy.prototxt.txt 
 # --model MobileNetSSD_deploy.caffemodel
 
-import numpy as np
-import argparse
 import os
-import time
 import cv2
+import time
+import argparse
+import numpy as np
+from settings import *
 
 def ssd(image_path, max_threshold=0.3):
     # construct the argument parse and parse the arguments
@@ -27,8 +28,6 @@ def ssd(image_path, max_threshold=0.3):
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
     # load our serialized model from disk
-    print("[INFO] loading model...")
-
     model_path = os.getcwd() + "/SSD/MobileNetSSD_deploy.caffemodel"
     prototxt_path = os.getcwd() + "/SSD/MobileNetSSD_deploy.prototxt.txt"
     net = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)

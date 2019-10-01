@@ -1,6 +1,8 @@
 import os
+import datetime
 from dotenv import load_dotenv
 
+# Load the .env file
 load_dotenv()
 
 def get_env_value(envVariable):
@@ -26,3 +28,10 @@ def get_list_of_files(dirName):
             else:
                 allFiles.append(fullPath)
     return allFiles
+
+def log(message, level="info"):
+    if get_env_value("LOG_CHANNEL") in ["console", "test"]:
+        print("[" + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "] " + level.upper() + ": " + message)
+    # if get_env_value("LOG_CHANNEL") in ["file"]:
+    #     # TODO save message on file
+    #     print("[" + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "] " + level + ": " + message)

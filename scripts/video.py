@@ -28,20 +28,20 @@ def extract_frames(video_path, output_path, frames_interval = 24):
 
 def prepare_video(video, output_folder):
     datetime_object = datetime.datetime.now()
-    print("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    log("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     video_folder = output_folder + str(datetime_object.month) + str(datetime_object.day) + str(datetime_object.hour) + str(datetime_object.minute) + str(datetime_object.second) + str(datetime_object.microsecond)
     os.mkdir(video_folder)
-    
+
     frames_folder = video_folder + "/frames"
     os.mkdir(frames_folder)
     # Get the camera number, so we can apply custom masks to the frames
     camera = video.split('/')[-3]
-        
+
     video_name = video.split('/')[-1]
     os.rename(video, video_folder + "/" + video_name)
     # We have now /output/91520328263175/video.h264 , let's extract the frames
     extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
-    
+
     # Get the list of frames, so we can order and analyse them
     frames = get_list_of_files(frames_folder)
     frames.sort(key=lambda f: os.path.getmtime(f))

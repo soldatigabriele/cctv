@@ -19,15 +19,15 @@ def process():
         # Now that we have extracted the frames from the video, let's start the analysis 
         outcome = False
         for frame in frames:
-            print("analysing: " + frame)
+            log("analysing: " + frame)
             outcome = analyse_image(frame, video_folder)
             if outcome:
-                print("object found")
+                log("object found")
                 break
 
         # If the outcome is not True, delete the folder with the video and frames
         if not outcome:
-            print('No object found. Removing folder')
+            log('No object found. Removing folder')
             shutil.rmtree(video_folder, ignore_errors=True)
 
         return outcome

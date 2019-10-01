@@ -11,7 +11,7 @@ def send_message(message="",):
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
         bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), message)
     else:
-        print(message)
+        log(message)
 
 def send_photo(photo, caption=""):
     if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
@@ -22,7 +22,7 @@ def send_photo(photo, caption=""):
     if get_env_value("NOTIFICATION_DRIVER") == 'python':
         cv2.imshow('image', cv2.imread(photo))
     else:
-        print('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        log('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 
 def send_animation(photo, caption=""):
@@ -34,10 +34,10 @@ def send_animation(photo, caption=""):
                 bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
             except:
                 msg = photo + "is too big to be sent"
-                print(msg)
+                log(msg)
                 send_message(msg)
     else:
-        print('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        log('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 def prepare_gif(photo):
     # Get the path to the video
