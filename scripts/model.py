@@ -2,6 +2,7 @@ import os
 import cv2
 import json
 import requests
+from ssd import ssd
 from yolo import yolo
 from dotenv import load_dotenv
 from settings import get_env_value 
@@ -15,6 +16,14 @@ def get_predictions(imagePath, threshold):
         if response.status_code == 200:
             # Predictions will be an empty array if nothing is found
             return json.loads(response.content)['predictions']
+        else:
+            print("error" + str(response))
+
+    if get_env_value("MODEL_DRIVER") == "ssd":
+        response = ssd(imagePath, threshold)
+        if response["status"] == "ok":
+            # Predictions will be an empty array if nothing is found
+            return response["predictions"]
         else:
             print("error" + str(response))
 
