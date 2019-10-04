@@ -28,7 +28,7 @@ def extract_frames(video_path, output_path, frames_interval = 24):
 
 def prepare_video(video, output_folder):
     datetime_object = datetime.datetime.now()
-    log("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    log("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "info")
     video_folder = output_folder + str(datetime_object.month) + str(datetime_object.day) + str(datetime_object.hour) + str(datetime_object.minute) + str(datetime_object.second) + str(datetime_object.microsecond)
     os.mkdir(video_folder)
 

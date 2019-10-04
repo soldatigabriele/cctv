@@ -17,7 +17,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return json.loads(response.content)['predictions']
         else:
-            log("error" + str(response))
+            log(str(response), 'error')
 
     if get_env_value("MODEL_DRIVER") == "ssd":
         response = ssd(imagePath, threshold)
@@ -25,7 +25,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
         else:
-            log("error" + str(response))
+            log(str(response), 'error')
 
     if get_env_value("MODEL_DRIVER") == "yolo":
         response = yolo(imagePath, threshold, 0.5, get_env_value("MODEL_LOCATION"))
@@ -33,7 +33,7 @@ def get_predictions(imagePath, threshold):
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
         else:
-            log("error" + str(response))
+            log(str(response), 'error')
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
@@ -70,6 +70,7 @@ def analyse_image(path, output_path):
             # Draw the bounding box around the objects
             if prediction['label'] == label or label == 'all':
                 draw_box(prediction['detection_box'], prediction['label'] + " " + str(round(prediction['probability'], 4)*100) + "%", img)
+                log(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%", "info")
                 if not os.path.exists(output_path + "/detected"):
                     os.mkdir(output_path + "/detected")
                 # generate the new path name
