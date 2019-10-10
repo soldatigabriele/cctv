@@ -12,7 +12,7 @@ def extract_frames(video_path, output_path, frames_interval = 24):
     name = 1
 
     if vc.isOpened():
-        rval , frame = vc.read()
+        rval, frame = vc.read()
     else:
         rval = False
 
@@ -25,8 +25,9 @@ def extract_frames(video_path, output_path, frames_interval = 24):
             name = name + 1
         c = c + 1
     vc.release()
+    return c
 
-def prepare_video(video, output_folder):
+def prepare_video(video, output_folder, event_id):
     datetime_object = datetime.datetime.now()
     log("new video found: " + video + " at " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "info")
     video_folder = output_folder + str(datetime_object.month) + str(datetime_object.day) + str(datetime_object.hour) + str(datetime_object.minute) + str(datetime_object.second) + str(datetime_object.microsecond)
@@ -40,7 +41,7 @@ def prepare_video(video, output_folder):
     video_name = video.split('/')[-1]
     os.rename(video, video_folder + "/" + video_name)
     # We have now /output/91520328263175/video.h264 , let's extract the frames
-    extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
+    total_frames = extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
 
     # Get the list of frames, so we can order and analyse them
     frames = get_list_of_files(frames_folder)
@@ -62,4 +63,4 @@ def prepare_video(video, output_folder):
         frames = get_list_of_files(resized_frames_folder)
         frames.sort(key=lambda f: os.path.getmtime(f))
 
-    return video_folder, frames
+    return video_folder, total_frames, frames

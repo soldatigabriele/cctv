@@ -9,7 +9,7 @@ load_dotenv()
 
 def get_env_value(envVariable):
     value = os.getenv(envVariable)
-    if(value is None or value==""):
+    if(value is None):
         print('Set the ' + envVariable + ' in the .env file')
         exit()
     return value

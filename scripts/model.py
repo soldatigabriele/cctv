@@ -46,7 +46,7 @@ def draw_box(detection_box, label, img):
     cv2.putText(img,label,(left,top-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
     return
 
-def analyse_image(path, output_path):
+def analyse_image(path, output_path, attributes):
     # Import the image
     img = cv2.imread(path)
 
@@ -60,7 +60,26 @@ def analyse_image(path, output_path):
 
     # Check if the predictions contain person, if so return the path to the image
     match_found = False
+    attributes['model'] = get_env_value("MODEL_DRIVER")
+    attributes['labels_found'] = {}
+
     for prediction in predictions:
+
+        # Store the label in the logs only if the probability is a minimum of 50%
+        label = prediction['label']
+        if(prediction['probability'] > 0.4):
+            if label in attributes['labels_found']:
+                wehave = attributes['labels_found'][prediction['label']]
+                if wehave and wehave['probability'] < prediction['probability']:
+                    # If we already have the key, update it if we have found something better
+                    attributes['labels_found'][prediction['label']]['probability'] = float(prediction['probability'])
+                    attributes['labels_found'][label]['detection_box'] = prediction['detection_box']
+            else:
+                # We don't have the key. Let's set them
+                attributes['labels_found'][label] = {}
+                attributes['labels_found'][label]['probability'] = float(prediction['probability'])
+                attributes['labels_found'][label]['detection_box'] = prediction['detection_box']
+
         log(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
         labels_list = get_env_value("MODEL_LABELS")
         if labels_list is None:
@@ -75,6 +94,10 @@ def analyse_image(path, output_path):
                     os.mkdir(output_path + "/detected")
                 # generate the new path name
                 path = match_found = output_path + '/detected/' + os.path.basename(path)
+                attributes['payload'] = json.dumps(str(predictions))
+                attributes['confidence'] = round(prediction['probability'], 4)
+                attributes['object_label'] = prediction['label']
                 cv2.imwrite(path, img) 
 
-    return match_found
+    attributes['outcome'] = match_found
+    return match_found, attributes
