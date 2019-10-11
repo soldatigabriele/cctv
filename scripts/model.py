@@ -99,5 +99,5 @@ def analyse_image(path, output_path, attributes):
                 attributes['object_label'] = prediction['label']
                 cv2.imwrite(path, img) 
 
-    attributes['outcome'] = match_found
+    attributes['outcome'] = bool(match_found)
     return match_found, attributes
