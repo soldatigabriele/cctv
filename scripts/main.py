@@ -51,7 +51,11 @@ def process():
             shutil.rmtree(video_folder, ignore_errors=True)
 
         # Serialize the labels
-        attributes['labels_found'] = json.dumps(attributes['labels_found'], cls=JsonHelper)
+        try:
+            attributes['labels_found'] = json.dumps(attributes['labels_found'], cls=JsonHelper)
+        except expression:
+            log('could not dump the attributes to array. Probably the attributes obj did not have the labels_found key', 'error')
+
         database.updateEvent(event_id, attributes)
         return outcome
     return None
