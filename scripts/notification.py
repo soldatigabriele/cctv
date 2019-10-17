@@ -69,7 +69,7 @@ def prepare_gif(photo):
     # Remove tmp folder
     shutil.rmtree(tmp_folder, ignore_errors=True)
 
-    gif = path + "/test.gif"
+    gif = path + "/detection.gif"
     imageio.mimsave(gif, images)
     return gif
 
