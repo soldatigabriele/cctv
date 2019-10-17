@@ -61,13 +61,15 @@ def analyse_image(path, output_path, attributes):
     # Check if the predictions contain person, if so return the path to the image
     match_found = False
     attributes['model'] = get_env_value("MODEL_DRIVER")
-    attributes['labels_found'] = {}
+
+    if 'labels_found' not in attributes.keys(): 
+        attributes['labels_found'] = {}
 
     for prediction in predictions:
 
         # Store the label in the logs only if the probability is a minimum of 50%
         label = prediction['label']
-        if(prediction['probability'] > 0.4):
+        if(prediction['probability'] > 0.3):
             if label in attributes['labels_found']:
                 wehave = attributes['labels_found'][prediction['label']]
                 if wehave and wehave['probability'] < prediction['probability']:
