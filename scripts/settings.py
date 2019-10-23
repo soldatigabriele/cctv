@@ -14,6 +14,11 @@ def get_env_value(envVariable):
         exit()
     return value
 
+def listdir_nohidden(path):
+    for f in os.listdir(path):
+        if not f.startswith('.'):
+            yield f
+
 def get_list_of_files(dirName):
     # create a list of file and sub directories 
     # names in the given directory 

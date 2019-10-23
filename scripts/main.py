@@ -60,6 +60,15 @@ def process():
         return outcome
     return None
 
+def cleanup():
+    current_time = time.time()
+    for f in listdir_nohidden(os.getcwd() + "/../video/output"):
+        folder_path = os.getcwd() + "/../video/output/" + f
+        creation_time = os.path.getctime(folder_path)
+        if (current_time - creation_time) // (24 * 3600) >= int(get_env_value('KEEP_RECORDS_FOR_DAYS')):
+            shutil.rmtree(folder_path, ignore_errors=True)
+            print('{} removed'.format(folder_path))
+
 # Start the loop
 while True:
     try:
@@ -68,6 +77,8 @@ while True:
         # If the outcome is positive, send a notification
         if outcome:
             notify(outcome)
+        # Delete old files
+        cleanup()
     except:
         log("Exception occurred", 'error')
         send_message("An error occurred at " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
