@@ -9,7 +9,10 @@ from settings import *
 def send_message(message="",):
     if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
         bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
-        bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), message)
+        try:
+            bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), message)
+        except:
+            log('error sending the telegram message at ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'error')
     else:
         log(message)
 

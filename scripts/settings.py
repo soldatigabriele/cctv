@@ -7,11 +7,13 @@ from logging.handlers import TimedRotatingFileHandler
 # Load the .env file
 load_dotenv()
 
-def get_env_value(envVariable):
+def get_env_value(envVariable, default = None):
     value = os.getenv(envVariable)
     if(value is None):
-        print('Set the ' + envVariable + ' in the .env file')
-        exit()
+        if(default is None):
+            print('Set the ' + envVariable + ' in the .env file')
+            exit()
+        return default
     return value
 
 def listdir_nohidden(path):
