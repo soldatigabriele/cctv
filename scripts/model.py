@@ -28,7 +28,7 @@ def get_predictions(imagePath, threshold):
             log(str(response), 'error')
 
     if get_env_value("MODEL_DRIVER") == "yolo":
-        response = yolo(imagePath, threshold, 0.5, get_env_value("MODEL_LOCATION"))
+        response = yolo(imagePath, threshold, 0.3, get_env_value("MODEL_LOCATION"))
         if response["status"] == "ok":
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
