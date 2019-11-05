@@ -18,10 +18,13 @@ def extract_frames(video_path, output_path, frames_interval = 24):
     while rval:
         rval, frame = vc.read()
         # Here we set the frames to take (24 means 1 frame every 24, so 1 per second in our stream)
-        if (c%(frames_interval) == 0) and c < int(get_env_value("FRAMES_LIMIT", 400)):
+        if (c%(frames_interval) == 0) and c < int(get_env_value("DETECTION_FRAMES_LIMIT", 400)):
             cv2.imwrite(output_path +'/'+ str(name) + '.jpg',frame)
             cv2.waitKey(1)
             name = name + 1
+        # If we reach the max number of frames we want to extract, break the while
+        if (c >= int(get_env_value("VIDEO_FRAMES_LIMIT", 5000))):
+            break
         c = c + 1
     vc.release()
     return c
