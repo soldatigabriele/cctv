@@ -67,6 +67,8 @@ def cleanup():
         creation_time = os.path.getctime(folder_path)
         if (current_time - creation_time) // (24 * 3600) >= int(get_env_value('KEEP_RECORDS_FOR_DAYS')):
             shutil.rmtree(folder_path, ignore_errors=True)
+            print('creation time: {}'.format(creation_time))
+            print('formula: {} >= env days: {}'.format(current_time - creation_time) // (24 * 3600), int(get_env_value('KEEP_RECORDS_FOR_DAYS')))
             print('{} removed'.format(folder_path))
 
 # Start the loop
