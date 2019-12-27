@@ -61,7 +61,7 @@ def prepare_video(video, output_folder, event_id):
                 width = img.shape[1]
                 crop_img = img[100:height, 0:width-400]
                 # Mask the top right corner
-                trangle = np.array( [(width-1080, 0), (width-400, 0), (width-400, 390)])
+                trangle = np.array( [(width-1080, 0), (width-400, 0), (width-400, 340)])
                 cv2.drawContours(crop_img, [trangle], 0, (81, 81, 81), -1)
                 # Save the cropped image
                 cv2.imwrite(resized_frames_folder + '/' + frame_name, crop_img)
