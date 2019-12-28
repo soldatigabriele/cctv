@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import cv2
+import numpy as np
 import datetime
 from settings import * 
 import os.path as path
