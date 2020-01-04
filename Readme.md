@@ -28,6 +28,9 @@ cd scripts
 python main.py
 ```
 
+Sample output:
+![Sample image](sample.jpeg)
+
 ## Prerequisites
 
 In order to scan the images for people, you need to have a server accepting the image and a model that scans it. For convenience we will use [this docker image](https://hub.docker.com/r/codait/max-object-detector).
