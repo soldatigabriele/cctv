@@ -49,6 +49,8 @@ def draw_box(detection_box, label, img):
 def analyse_image(path, output_path, attributes):
     # Import the image
     img = cv2.imread(path)
+    if img is None:
+        return False, attributes
 
     resize_ratio = float(get_env_value("MODEL_RESIZE_RATIO"))
     # Resize the image to make the process faster
