@@ -47,13 +47,14 @@ def process():
 
         # If the outcome is not True, delete the folder with the video and frames
         if not outcome:
-            log("No object found. Removing folder", "info")
-            shutil.rmtree(video_folder, ignore_errors=True)
+            log("No object found", "info")
+            if get_env_value('DELETE_VIDEOS_IF_NOTHING_FOUND'):
+                shutil.rmtree(video_folder, ignore_errors=True)
 
         # Serialize the labels
         try:
             attributes['labels_found'] = json.dumps(attributes['labels_found'], cls=JsonHelper)
-        except expression:
+        except:
             log('could not dump the attributes to array. Probably the attributes obj did not have the labels_found key', 'error')
 
         database.updateEvent(event_id, attributes)
