@@ -48,7 +48,8 @@ def process():
         # If the outcome is not True, delete the folder with the video and frames
         if not outcome:
             log("No object found", "info")
-            if get_env_value('DELETE_VIDEOS_IF_NOTHING_FOUND'):
+            if get_env_value('DELETE_VIDEOS_IF_NOTHING_FOUND') in ["True", "true", "yes"]:
+                log("Deleting {}".format(video_folder), "info")
                 shutil.rmtree(video_folder, ignore_errors=True)
 
         # Serialize the labels
