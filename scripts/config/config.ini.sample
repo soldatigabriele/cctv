@@ -1,0 +1,108 @@
+[General]
+SourcePath = /Users/<username>/ProjectCamera/video/cctv
+KeepRecordsForDays=7
+KeepLogsForDays=7
+; NotificationDriver = test, python, telegram
+NotificationDriver = telegram
+; LogChannel= file, console
+LogChannel=console
+
+[Database]
+DbHost=localhost
+DbDatabase=cctv
+DbUsername=root
+DbPassword=""
+DbPort=3306
+
+
+[Telegram]
+Token=123456789:ABC1234567890
+; Chat ids
+DevChatId=-123456
+BirdsChatId=-123456
+DerbishireChatId=-123456
+
+; Default cameras configuration. These values will be used as default options
+[DEFAULT]
+; If the camera analysis is enabled or not
+Enabled=no
+; ModelDriver = ssd, yolo, max_object_detector
+ModelDriver = ssd
+; ModelLocation = http://localhost:5000, yolo-coco, ssd
+ModelLocation = ssd
+; One of the chat id in the Telegram section
+TelegramChatId = DevChatId
+; Include a gif in the message = yes, no
+IncludeGif=no
+
+FramesInterval=25
+; Extract only the first N frames of a video
+VideoFramesLimit=1530
+; Do the detection of the first N frames extracted
+DetectionFramesLimit=400
+DeleteVideosIfNothingFound=yes
+
+; Reduce the size of the image before analysing it
+ModelResizeRatio=0.5
+ModelThreshold=0.1
+; ModelLabels=person,cat,dog
+; ModelLabels=all
+ModelLabels=person
+
+; Cameras specific configurations
+; Each section corresponds to a camera
+
+; Back garden camera
+[Camera-01]
+Enabled=no
+
+; Driveway camera
+[Camera-02]
+Enabled=yes
+ModelDriver = ssd
+ModelLocation = ssd
+TelegramChatId = DerbishireChatId
+IncludeGif=no
+
+FramesInterval=25
+VideoFramesLimit=1530
+DetectionFramesLimit=400
+DeleteVideosIfNothingFound=yes
+
+ModelResizeRatio=0.5
+ModelThreshold=0.1
+ModelLabels=person
+
+; Catwalk camera
+[Camera-03]
+Enabled=no
+ModelDriver = max_object_detector
+ModelLocation = http://localhost:5000
+TelegramChatId = DerbishireChatId
+IncludeGif=no
+
+FramesInterval=25
+VideoFramesLimit=1530
+DetectionFramesLimit=400
+DeleteVideosIfNothingFound=yes
+
+ModelResizeRatio=0.5
+ModelThreshold=0.1
+ModelLabels=person
+
+; Birds camera
+[Camera-04]
+Enabled=no
+ModelDriver = yolo
+ModelLocation = yolo
+TelegramChatId = BirdsChatId
+IncludeGif=yes
+
+FramesInterval=25
+VideoFramesLimit=250
+DetectionFramesLimit=250
+DeleteVideosIfNothingFound=no
+
+ModelResizeRatio=0.5
+ModelThreshold=0.1
+ModelLabels=bird

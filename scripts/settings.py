@@ -1,20 +1,35 @@
 import os
 import logging
 import datetime
-from dotenv import load_dotenv
+import configparser
 from logging.handlers import TimedRotatingFileHandler
 
-# Load the .env file
-load_dotenv()
+# Load the configuration file
+configuration = configparser.ConfigParser()
+configuration.read('config/config.ini')
 
-def get_env_value(envVariable, default = None):
-    value = os.getenv(envVariable)
-    if(value is None):
-        if(default is None):
-            print('Set the ' + envVariable + ' in the .env file')
-            exit()
-        return default
-    return value
+def config(key, type = "string"):
+    """ Returns the value of the
+    configuration passed as key.
+    Requires the section.key as format
+    """
+    keys = str.split(key, ".")
+    if type == "bool":
+        return configuration[keys[0]].getboolean(keys[1]);
+    else:
+        return  configuration[keys[0]].get(keys[1]);
+
+def camera_config(camera, key, type = "string"):
+    """Returns the config for a specific
+    Camera. Takes the camera number as first
+    parameter, the key as second one, and the 
+    type as third parameter
+    """
+    camera = ("Camera-%s" % camera)
+    if type == "bool":
+        return configuration[camera].getboolean(key);
+    else:
+        return  configuration[camera].get(key);
 
 def listdir_nohidden(path):
     for f in os.listdir(path):
@@ -56,9 +71,9 @@ c_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s: %(message
 logger.addHandler(c_handler)
 
 def log(message, level="debug"):
-    if get_env_value("LOG_CHANNEL") in ["console", "test"]:
+    if config("General.LogChannel") in ["console", "test"]:
         print("[" + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "] " + level.upper() + ": " + message)
-    if get_env_value("LOG_CHANNEL") in ["file"]:
+    if config("General.LogChannel") in ["file"]:
         if(level == "error"):
             # exc_info will log the exception details
             logger.error(message, exc_info=True)

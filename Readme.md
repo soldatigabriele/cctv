@@ -15,17 +15,17 @@ Then you need to install the pip modules to execute the scripts:
 pip install -r requirements.txt
 ```
 
-Edit the .env file to add the path of the folder you want to watch and the optional telegram token for the notification:
+Edit the *config/config.ini* file to add the path of the folder you want to watch and the optional telegram token for the notification:
 
 ```bash
-cp scripts/.env_example scripts/.env
+cp scripts/config.ini.sample scripts/config/config.ini
 ```
 
 Execute the script to watch the folder:
 
 ```bash
 cd scripts
-python main.py
+python3 main.py
 ```
 
 Sample output:

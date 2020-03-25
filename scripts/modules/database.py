@@ -22,10 +22,10 @@ class Database:
         try:
             # Open the connection with the database
             self.connection = mysql.connector.connect(
-                host=get_env_value("DB_HOST"),
-                user=get_env_value("DB_USERNAME"),
-                port=get_env_value("DB_PORT"),
-                passwd=get_env_value("DB_PASSWORD")
+                host=config("Database.DbHost"),
+                user=config("Database.DbUsername"),
+                port=config("Database.DbPort"),
+                passwd=config("Database.DbPassword")
             )
             self.connection.set_converter_class(NumpyMySQLConverter)
 
@@ -39,7 +39,7 @@ class Database:
             print("Cannot instantiate a cursor")
 
         # Use the Database
-        self.cursor.execute("USE " + get_env_value("DB_DATABASE"))
+        self.cursor.execute("USE cctv")
 
     def insertLog(self, event, description):
         if self.connected:

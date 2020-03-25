@@ -6,35 +6,39 @@ import telegram
 import datetime
 from settings import *
 
-def send_message(message="",):
-    if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
-        bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
+def send_message(camera_number, message="",):
+    if config("General.NotificationDriver") == 'telegram':
+        bot = telegram.Bot(token=config("Telegram.Token"))
         try:
-            bot.send_message(get_env_value("TELEGRAM_CHAT_ID"), message)
+            channel_name = camera_config(camera_number, "TelegramChatId")
+            bot.send_message(config("Telegram." + channel_name), message)
         except:
             log('error sending the telegram message at ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'error')
     else:
         log(message)
 
-def send_photo(photo, caption=""):
-    if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
-        bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
+def send_photo(camera_number, photo, caption=""):
+    if config("General.NotificationDriver") == 'telegram':
+        bot = telegram.Bot(token=config("Telegram.Token"))
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if photo is not None: 
-            bot.send_photo(get_env_value("TELEGRAM_CHAT_ID"), photo=open(photo, 'rb'), caption=caption)
-    if get_env_value("NOTIFICATION_DRIVER") == 'python':
+            channel_name = camera_config(camera_number, "TelegramChatId")
+            bot.send_photo(config("Telegram." + channel_name), photo=open(photo, 'rb'), caption=caption)
+    if config("General.NotificationDriver") == 'python':
         cv2.imshow('image', cv2.imread(photo))
     else:
         log('object detected at: ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 
-def send_animation(photo, caption=""):
-    if get_env_value("NOTIFICATION_DRIVER") == 'telegram':
-        bot = telegram.Bot(token=get_env_value("TELEGRAM_TOKEN"))
+def send_animation(camera_number, photo, caption=""):
+    if config("General.NotificationDriver") == 'telegram':
+        bot = telegram.Bot(token=config("Telegram.Token"))
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if photo is not None: 
             try:
-                bot.send_animation(get_env_value("TELEGRAM_CHAT_ID"), animation=open(photo, 'rb'), caption=caption)
+                channel_name = camera_config(camera_number, "TelegramChatId")
+                bot.send_animation(config("Telegram." + channel_name),
+                                   animation=open(photo, 'rb'), caption=caption)
             except:
                 msg = photo + "is too big to be sent"
                 log(msg)
@@ -76,11 +80,11 @@ def prepare_gif(photo):
     imageio.mimsave(gif, images)
     return gif
 
-def notify(photo, caption=""):
+def notify(camera_number, photo, caption=""):
     # Send the photo to telegram
-    send_photo(photo, caption)
+    send_photo(camera_number, photo, caption)
 
-    if get_env_value("INCLUDE_GIF") in ["True", "true", "yes"]:
+    if camera_config(camera_number, "IncludeGif", "bool"):
         gif = prepare_gif(photo)
-        send_animation(gif, caption)
+        send_animation(camera_number, gif, caption)
         

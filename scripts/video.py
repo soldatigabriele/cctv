@@ -7,7 +7,8 @@ from settings import *
 import os.path as path
 from notification import notify
 
-def extract_frames(video_path, output_path, frames_interval = 24):
+
+def extract_frames(video_path, output_path, frames_interval=24, video_frames_limit=500):
     vc = cv2.VideoCapture(video_path)
     c = 1
     name = 1
@@ -19,12 +20,12 @@ def extract_frames(video_path, output_path, frames_interval = 24):
     while rval:
         rval, frame = vc.read()
         # Here we set the frames to take (24 means 1 frame every 24, so 1 per second in our stream)
-        if (c%(frames_interval) == 0) and c < int(get_env_value("DETECTION_FRAMES_LIMIT", 400)):
+        if (c % (frames_interval) == 0) and c < int(video_frames_limit):
             cv2.imwrite(output_path +'/'+ str(name) + '.jpg',frame)
             cv2.waitKey(1)
             name = name + 1
         # If we reach the max number of frames we want to extract, break the while
-        if (c >= int(get_env_value("VIDEO_FRAMES_LIMIT", 5000))):
+        if (c >= int(video_frames_limit)):
             break
         c = c + 1
     vc.release()
@@ -39,18 +40,19 @@ def prepare_video(video, output_folder, event_id):
     frames_folder = video_folder + "/frames"
     os.mkdir(frames_folder)
     # Get the camera number, so we can apply custom masks to the frames
-    camera = video.split('/')[-3]
+    camera_number = video.split('/')[-3]
 
     video_name = video.split('/')[-1]
     os.rename(video, video_folder + "/" + video_name)
     # We have now /output/91520328263175/video.h264 , let's extract the frames
-    total_frames = extract_frames(video_folder + "/" + video_name, frames_folder, int(get_env_value("FRAMES_INTERVAL")))
+    total_frames = extract_frames(video_folder + "/" + video_name, frames_folder, int(
+        camera_config(camera_number, "FramesInterval")), int(camera_config(camera_number, "VideoFramesLimit")))
 
     # Get the list of frames, so we can order and analyse them
     frames = get_list_of_files(frames_folder)
     frames.sort(key=lambda f: os.path.getmtime(f))
 
-    if camera == "02":
+    if camera_number == "02":
         resized_frames_folder = video_folder + "/resized_frames"
         os.mkdir(resized_frames_folder)
         for frame in frames:

@@ -7,9 +7,9 @@ from yolo import yolo
 from settings import * 
 from dotenv import load_dotenv
 
-def get_predictions(imagePath, threshold):
-    if get_env_value("MODEL_DRIVER") == "max_object_detector":
-        url = get_env_value("MODEL_LOCATION") + '/model/predict?threshold=' + str(threshold)
+def get_predictions(camera_number, imagePath, threshold):
+    if camera_config(camera_number, "ModelDriver") == "max_object_detector":
+        url = camera_config(camera_number, "ModelLocation") + '/model/predict?threshold=' + str(threshold)
         files = {'image': open(imagePath, 'rb')}
         response = requests.post(url, files=files)
 
@@ -19,7 +19,7 @@ def get_predictions(imagePath, threshold):
         else:
             log(str(response), 'error')
 
-    if get_env_value("MODEL_DRIVER") == "ssd":
+    if camera_config(camera_number, "ModelDriver") == "ssd":
         response = ssd(imagePath, threshold)
         if response["status"] == "ok":
             # Predictions will be an empty array if nothing is found
@@ -27,8 +27,8 @@ def get_predictions(imagePath, threshold):
         else:
             log(str(response), 'error')
 
-    if get_env_value("MODEL_DRIVER") == "yolo":
-        response = yolo(imagePath, threshold, 0.3, get_env_value("MODEL_LOCATION"))
+    if camera_config(camera_number, "ModelDriver") == "yolo":
+        response = yolo(imagePath, threshold, 0.3, camera_config(camera_number, "ModelLocation"))
         if response["status"] == "ok":
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
@@ -46,23 +46,23 @@ def draw_box(detection_box, label, img):
     cv2.putText(img,label,(left,top-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
     return
 
-def analyse_image(path, output_path, attributes):
+def analyse_image(camera_number, path, output_path, attributes):
     # Import the image
     img = cv2.imread(path)
     if img is None:
         return False, attributes
 
-    resize_ratio = float(get_env_value("MODEL_RESIZE_RATIO"))
+    resize_ratio = float(camera_config(camera_number, "ModelResizeRatio"))
     # Resize the image to make the process faster
     img = cv2.resize(img, None, fx=resize_ratio, fy=resize_ratio)
 
     # Get the predictions
-    threshold = float(get_env_value("MODEL_THRESHOLD"))
-    predictions = get_predictions(path, threshold)
+    threshold = float(camera_config(camera_number, "ModelThreshold"))
+    predictions = get_predictions(camera_number, path, threshold)
 
     # Check if the predictions contain person, if so return the path to the image
     match_found = False
-    attributes['model'] = get_env_value("MODEL_DRIVER")
+    attributes['model'] = camera_config(camera_number, "ModelDriver")
 
     if 'labels_found' not in attributes.keys(): 
         attributes['labels_found'] = {}
@@ -85,7 +85,7 @@ def analyse_image(path, output_path, attributes):
                 attributes['labels_found'][label]['detection_box'] = prediction['detection_box']
 
         log(prediction['label'] + ": " + str(round(prediction['probability'], 4)*100) + "%")
-        labels_list = get_env_value("MODEL_LABELS")
+        labels_list = camera_config(camera_number, "ModelLabels")
         if labels_list is None:
             labels_list = 'all'
         labels_list = labels_list.split(",")
