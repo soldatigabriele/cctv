@@ -36,10 +36,6 @@ def process():
         # Prepare the frames for further analysis
         video_folder, total_frames, frames = prepare_video(video, output_folder, event_id)
 
-        # If we want to notify in any case, let's skip the object detection
-        if camera_config(camera_number, "NotifyAlways"):
-            return frames[1], camera_number
-
         frames_interval = camera_config(camera_number, "FramesInterval")
 
         attributes = {
@@ -48,6 +44,11 @@ def process():
             'skipped_frames': frames_interval,
             'camera': camera_number
         }
+
+        # If we want to notify in any case, let's skip the object detection
+        if camera_config(camera_number, "NotifyAlways"):
+            database.updateEvent(event_id, attributes)
+            return frames[1], camera_number
 
         # Now that we have extracted the frames from the video, let's start the analysis 
         outcome = False
