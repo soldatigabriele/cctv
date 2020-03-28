@@ -1,6 +1,9 @@
 import platform
 import mysql.connector
+from datetime import timedelta
+from datetime import datetime as dt
 from settings import *
+
 
 class NumpyMySQLConverter(mysql.connector.conversion.MySQLConverter):
     """ A mysql.connector Converter that handles Numpy types """
@@ -17,6 +20,7 @@ class NumpyMySQLConverter(mysql.connector.conversion.MySQLConverter):
     def _int64_to_mysql(self, value):
         return int(value)
 
+
 class Database:
     def __init__(self):
         try:
@@ -30,7 +34,8 @@ class Database:
             self.connection.set_converter_class(NumpyMySQLConverter)
 
         except:
-            print("Error occurred while trying to connect with the database. Check the credentials in the .env")
+            print(
+                "Error occurred while trying to connect with the database. Check the credentials in the .env")
         # Get a cursor
         try:
             self.cursor = self.connection.cursor()
@@ -50,14 +55,15 @@ class Database:
 
     def insertLog(self, event, description):
         if self.connected:
-            self.cursor.execute("INSERT INTO logs (event, description, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (event, description))
+            self.cursor.execute(
+                "INSERT INTO logs (event, description, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (event, description))
             self.connection.commit()
             return
 
     def createEvent(self, elements):
         if self.connected:
-            self.cursor.execute("INSERT INTO events (filename, processor, timestamp) VALUES (%s, %s, %s)", 
-                (elements['filename'], platform.processor(), elements['timestamp']))
+            self.cursor.execute("INSERT INTO events (filename, processor, timestamp) VALUES (%s, %s, %s)",
+                                (elements['filename'], platform.processor(), elements['timestamp']))
             self.connection.commit()
             return self.cursor.lastrowid
 
@@ -69,3 +75,23 @@ class Database:
                 self.cursor.execute(query, (elements[key], event_id))
                 self.connection.commit()
             return True
+
+    def getMessages(self):
+        if self.connected:
+            # ~47h (Telegram messages can be deleted within 48h)
+            timestamp = dt.now() - timedelta(minutes=2800)
+            query = "SELECT * FROM messages WHERE timestamp <= %s"
+            self.cursor.execute(query, [timestamp])
+            messages = {}
+            for id, message_id, chat_id, timestamp in self.cursor:
+
+                messages[message_id] = chat_id
+                
+            return messages
+
+    def deleteMessage(self, message_id):
+        if self.connected:
+            # Delete the message from the database
+            query = "DELETE FROM messages WHERE message_id = %s"
+            self.cursor.execute(query, [message_id])
+            self.connection.commit()

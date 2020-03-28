@@ -3,7 +3,7 @@ import os
 import json
 import time
 import shutil
-from settings import * 
+from settings import *
 import os.path as path
 from notification import *
 from datetime import datetime
@@ -11,6 +11,7 @@ from model import analyse_image
 from video import prepare_video
 from modules.database import Database
 from modules.json_helper import JsonHelper
+
 
 def process():
     output_folder = os.getcwd() + "/../video/output/"
@@ -34,7 +35,8 @@ def process():
         })
 
         # Prepare the frames for further analysis
-        video_folder, total_frames, frames = prepare_video(video, output_folder, event_id)
+        video_folder, total_frames, frames = prepare_video(
+            video, output_folder, event_id)
 
         frames_interval = camera_config(camera_number, "FramesInterval")
 
@@ -50,13 +52,14 @@ def process():
             database.updateEvent(event_id, attributes)
             return frames[1], camera_number
 
-        # Now that we have extracted the frames from the video, let's start the analysis 
+        # Now that we have extracted the frames from the video, let's start the analysis
         outcome = False
         frame_counter = 0
         for frame in frames:
             frame_counter = frame_counter + 1
             log("analysing: " + frame, "debug")
-            outcome, attributes = analyse_image(camera_number, frame, video_folder, attributes)
+            outcome, attributes = analyse_image(
+                camera_number, frame, video_folder, attributes)
             if outcome:
                 log("object found", "info")
                 attributes['frame'] = frame_counter * int(frames_interval)
@@ -71,13 +74,15 @@ def process():
 
         # Serialize the labels
         try:
-            attributes['labels_found'] = json.dumps(attributes['labels_found'], cls=JsonHelper)
+            attributes['labels_found'] = json.dumps(
+                attributes['labels_found'], cls=JsonHelper)
         except:
             log('could not dump the attributes to array. Probably the attributes obj did not have the labels_found key', 'error')
 
         database.updateEvent(event_id, attributes)
         return outcome, camera_number
     return None, None
+
 
 def cleanup():
     current_time = time.time()
@@ -93,6 +98,16 @@ def cleanup():
         if (current_time - creation_time) // (24 * 3600) >= int(config('General.KeepRecordsForDays')):
             shutil.rmtree(folder_path, ignore_errors=True)
             log('{} deleted as older than threshold'.format(folder_path), "info")
+    # Delete the messages older than 47h from Telegram chats
+    messages = database.getMessages()
+    for message_id in messages:
+        chat_id = messages[message_id]
+        log("deleting message {} from chat {} as older than 47h".format(message_id, chat_id), "info")
+        bot = telegram.Bot(token=config("Telegram.Token"))
+        bot.delete_message(chat_id, message_id)
+        # Delete the record from the database
+        database.deleteMessage(message_id)
+
 
 # Start the loop
 while True:
@@ -106,6 +121,7 @@ while True:
         cleanup()
     except:
         log("Exception occurred", 'error')
-        send_message("An error occurred at " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        send_message("An error occurred at " +
+                     datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
         time.sleep(60)
     time.sleep(1)
