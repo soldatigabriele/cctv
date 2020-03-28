@@ -41,6 +41,13 @@ class Database:
         # Use the Database
         self.cursor.execute("USE cctv")
 
+    def insertMessage(self, message):
+        if self.connected:
+            self.cursor.execute(
+                "INSERT INTO messages (chat_id, message_id, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (message.chat.id, message.message_id))
+            self.connection.commit()
+            return
+
     def insertLog(self, event, description):
         if self.connected:
             self.cursor.execute("INSERT INTO logs (event, description, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (event, description))

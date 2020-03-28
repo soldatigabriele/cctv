@@ -20,7 +20,7 @@ Token=123456789:ABC1234567890
 ; Chat ids
 DevChatId=-123456
 BirdsChatId=-123456
-DerbishireChatId=-123456
+DerbyshireChatId=-123456
 
 ; Default cameras configuration. These values will be used as default options
 [DEFAULT]
@@ -61,7 +61,7 @@ Enabled=no
 Enabled=yes
 ModelDriver = ssd
 ModelLocation = ssd
-TelegramChatId = DerbishireChatId
+TelegramChatId = DerbyshireChatId
 IncludeGif=no
 
 FramesInterval=25
@@ -78,7 +78,7 @@ ModelLabels=person
 Enabled=no
 ModelDriver = max_object_detector
 ModelLocation = http://localhost:5000
-TelegramChatId = DerbishireChatId
+TelegramChatId = DerbyshireChatId
 IncludeGif=no
 
 FramesInterval=25

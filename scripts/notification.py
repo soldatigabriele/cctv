@@ -5,13 +5,16 @@ import imageio
 import telegram
 import datetime
 from settings import *
+from modules.database import Database
+
+database = Database()
 
 def send_message(camera_number, message="",):
     if config("General.NotificationDriver") == 'telegram':
         bot = telegram.Bot(token=config("Telegram.Token"))
         try:
             channel_name = camera_config(camera_number, "TelegramChatId")
-            bot.send_message(config("Telegram." + channel_name), message)
+            message = bot.send_message(config("Telegram." + channel_name), message)
         except:
             log('error sending the telegram message at ' + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'error')
     else:
@@ -23,7 +26,8 @@ def send_photo(camera_number, photo, caption=""):
         caption = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if photo is not None: 
             channel_name = camera_config(camera_number, "TelegramChatId")
-            bot.send_photo(config("Telegram." + channel_name), photo=open(photo, 'rb'), caption=caption)
+            message = bot.send_photo(config("Telegram." + channel_name), photo=open(photo, 'rb'), caption=caption)
+            database.insertMessage(message)
     if config("General.NotificationDriver") == 'python':
         cv2.imshow('image', cv2.imread(photo))
     else:
@@ -37,8 +41,9 @@ def send_animation(camera_number, photo, caption=""):
         if photo is not None: 
             try:
                 channel_name = camera_config(camera_number, "TelegramChatId")
-                bot.send_animation(config("Telegram." + channel_name),
+                message = bot.send_animation(config("Telegram." + channel_name),
                                    animation=open(photo, 'rb'), caption=caption)
+                database.insertMessage(message)
             except:
                 msg = photo + "is too big to be sent"
                 log(msg)
