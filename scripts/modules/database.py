@@ -49,7 +49,7 @@ class Database:
     def insertMessage(self, message):
         if self.connected:
             self.cursor.execute(
-                "INSERT INTO messages (chat_id, message_id, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (message.chat.id, message.message_id))
+                "INSERT INTO messages (message_id, chat_id, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (message.message_id, message.chat.id))
             self.connection.commit()
             return
 
@@ -83,10 +83,10 @@ class Database:
             query = "SELECT * FROM messages WHERE timestamp <= %s"
             self.cursor.execute(query, [timestamp])
             messages = {}
-            for id, message_id, chat_id, timestamp in self.cursor:
+            for id, chat_id, message_id, timestamp in self.cursor:
 
                 messages[message_id] = chat_id
-                
+
             return messages
 
     def deleteMessage(self, message_id):

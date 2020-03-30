@@ -121,7 +121,7 @@ while True:
         cleanup()
     except:
         log("Exception occurred", 'error')
-        send_message("An error occurred at " +
+        send_message( "01", "An error occurred at " +
                      datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
         time.sleep(60)
     time.sleep(1)
