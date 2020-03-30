@@ -19,7 +19,7 @@ DbPort=3306
 Token=123456789:ABC1234567890
 ; Chat ids
 DevChatId=-123456
-BirdsChatId=-123456
+CatwalkChatId=-123456
 DerbyshireChatId=-123456
 
 ; Default cameras configuration. These values will be used as default options
@@ -93,16 +93,3 @@ ModelLabels=person
 ; Birds camera
 [Camera-04]
 Enabled=no
-ModelDriver = yolo
-ModelLocation = yolo
-TelegramChatId = BirdsChatId
-IncludeGif=yes
-
-FramesInterval=25
-VideoFramesLimit=250
-DetectionFramesLimit=250
-DeleteVideosIfNothingFound=no
-
-ModelResizeRatio=0.5
-ModelThreshold=0.1
-ModelLabels=bird
