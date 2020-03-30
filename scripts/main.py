@@ -104,7 +104,11 @@ def cleanup():
         chat_id = messages[message_id]
         log("deleting message {} from chat {} as older than 47h".format(message_id, chat_id), "info")
         bot = telegram.Bot(token=config("Telegram.Token"))
-        bot.delete_message(chat_id, message_id)
+        try:
+            bot.delete_message(chat_id, message_id)
+        except telegram.error.BadRequest as error:
+            # If the message could not be found, log the warning, but continue
+            log(error, 'warning')
         # Delete the record from the database
         database.deleteMessage(message_id)
 
