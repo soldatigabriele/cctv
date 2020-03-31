@@ -48,7 +48,7 @@ def process():
         }
 
         # If we want to notify in any case, let's skip the object detection
-        if camera_config(camera_number, "NotifyAlways"):
+        if camera_config(camera_number, "NotifyAlways", "bool"):
             database.updateEvent(event_id, attributes)
             return frames[1], camera_number
 
