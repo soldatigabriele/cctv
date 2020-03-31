@@ -59,7 +59,7 @@ def prepare_video(video, output_folder, event_id):
     if camera_number == "03":
         for frame in frames:
             img = cv2.imread(frame)
-            if sum(img.mean(axis=0).mean(axis=0)) < 5:
+            if img is not None and sum(img.mean(axis=0).mean(axis=0)) < 5:
                 os.remove(frame)
 
     if camera_number == "02":
