@@ -34,6 +34,9 @@ ModelLocation = ssd
 TelegramChatId = DevChatId
 ; Include a gif in the message = yes, no
 IncludeGif=no
+; Make a post call to the webhook = yes, no
+IncludeWebhook=yes
+Webhook=https://maker.ifttt.com/trigger/{event_name}/with/key/abc123456789
 
 FramesInterval=25
 ; Extract only the first N frames of a video
@@ -82,7 +85,6 @@ ModelDriver = max_object_detector
 ModelLocation = http://localhost:5000
 TelegramChatId = DerbyshireChatId
 IncludeGif=no
-IncludeWebhook=yes
 
 FramesInterval=25
 VideoFramesLimit=1530
