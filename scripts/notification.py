@@ -3,6 +3,7 @@ import cv2
 import shutil
 import imageio
 import telegram
+import requests
 import datetime
 from settings import *
 from modules.database import Database
@@ -85,6 +86,18 @@ def prepare_gif(photo):
     imageio.mimsave(gif, images)
     return gif
 
+
+def trigger_webhook(webhook):
+    # Make a POST call to a webhook to trigger a VoIP call or any other event
+    response = requests.post(url=webhook)
+    if response.status_code == 200:
+        log('successfully triggered webhook ' + webhook + '  at ' +
+            datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'info')
+    else:
+        log('error triggering webhook ' + webhook + '  at ' +
+            datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ' reason: ' + r.text, 'error')
+
+
 def notify(camera_number, photo, caption=""):
     # Send the photo to telegram
     send_photo(camera_number, photo, caption)
@@ -93,3 +106,7 @@ def notify(camera_number, photo, caption=""):
         gif = prepare_gif(photo)
         send_animation(camera_number, gif, caption)
         
+    # The webhook can then trigger a voip call or any other action
+    # like turning the lights on, etc. You can use IFTTT to setup webhooks.
+    if camera_config(camera_number, "IncludeWebhook", "bool"):
+        trigger_webhook(camera_config(camera_number, "Webhook"))

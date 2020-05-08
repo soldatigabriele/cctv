@@ -63,6 +63,8 @@ ModelDriver = ssd
 ModelLocation = ssd
 TelegramChatId = DerbyshireChatId
 IncludeGif=no
+IncludeWebhook=yes
+Webhook=https://maker.ifttt.com/trigger/{event_name}/with/key/abc123456789
 
 FramesInterval=25
 VideoFramesLimit=1530
@@ -80,6 +82,7 @@ ModelDriver = max_object_detector
 ModelLocation = http://localhost:5000
 TelegramChatId = DerbyshireChatId
 IncludeGif=no
+IncludeWebhook=yes
 
 FramesInterval=25
 VideoFramesLimit=1530
