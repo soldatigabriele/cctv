@@ -99,14 +99,14 @@ def trigger_webhook(webhook):
 
 
 def notify(camera_number, photo, caption=""):
+    # The webhook can then trigger a voip call or any other action
+    # like turning the lights on, etc. You can use IFTTT to setup webhooks.
+    if camera_config(camera_number, "IncludeWebhook", "bool"):
+        trigger_webhook(camera_config(camera_number, "Webhook"))
+
     # Send the photo to telegram
     send_photo(camera_number, photo, caption)
 
     if camera_config(camera_number, "IncludeGif", "bool"):
         gif = prepare_gif(photo)
         send_animation(camera_number, gif, caption)
-        
-    # The webhook can then trigger a voip call or any other action
-    # like turning the lights on, etc. You can use IFTTT to setup webhooks.
-    if camera_config(camera_number, "IncludeWebhook", "bool"):
-        trigger_webhook(camera_config(camera_number, "Webhook"))
