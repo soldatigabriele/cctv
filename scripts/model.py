@@ -28,7 +28,7 @@ def get_predictions(camera_number, imagePath, threshold):
             log(str(response), 'error')
 
     if camera_config(camera_number, "ModelDriver") == "yolo":
-        response = yolo(imagePath, threshold, 0.3, camera_config(camera_number, "ModelLocation"))
+        response = yolo(imagePath, threshold, threshold, camera_config(camera_number, "ModelLocation"))
         if response["status"] == "ok":
             # Predictions will be an empty array if nothing is found
             return response["predictions"]
