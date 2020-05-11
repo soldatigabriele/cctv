@@ -86,12 +86,6 @@ def process():
 
 def cleanup():
     current_time = time.time()
-    for f in listdir_nohidden(os.getcwd() + "/storage/logs"):
-        folder_path = os.getcwd() + "/storage/logs/" + f
-        creation_time = os.path.getctime(folder_path)
-        if (current_time - creation_time) // (24 * 3600) >= int(config('General.KeepLogsForDays')):
-            shutil.rmtree(folder_path, ignore_errors=True)
-            log('{} deleted as older than threshold'.format(folder_path), "info")
     for f in listdir_nohidden(os.getcwd() + "/../video/output"):
         folder_path = os.getcwd() + "/../video/output/" + f
         creation_time = os.path.getctime(folder_path)

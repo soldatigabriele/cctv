@@ -57,7 +57,7 @@ def get_list_of_files(dirName):
 logger = logging.getLogger('logger')
 
 logger.setLevel('DEBUG')
-handler = TimedRotatingFileHandler("storage/logs/app.log", when="midnight", interval=1)
+handler = TimedRotatingFileHandler("storage/logs/app.log", when="midnight", interval=1, backupCount=7)
 handler.suffix = "%Y%m%d"
 handler.setLevel(logging.DEBUG)
 handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s', datefmt='%d-%m-%Y %H:%M:%S'))
