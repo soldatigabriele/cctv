@@ -26,10 +26,8 @@ DerbyshireChatId=-123456
 [DEFAULT]
 ; If the camera analysis is enabled or not
 Enabled=no
-; ModelDriver = ssd, yolo, max_object_detector
-ModelDriver = ssd
-; ModelLocation = http://localhost:5000, yolo-coco, ssd
-ModelLocation = ssd
+; ModelDriver = Ssd, Yolo
+ModelDriver = Ssd
 ; One of the chat id in the Telegram section
 TelegramChatId = DevChatId
 ; Include a gif in the message = yes, no
@@ -62,8 +60,7 @@ Enabled=no
 ; Driveway camera
 [Camera-02]
 Enabled=yes
-ModelDriver = ssd
-ModelLocation = ssd
+ModelDriver = Ssd
 TelegramChatId = DerbyshireChatId
 IncludeGif=no
 IncludeWebhook=yes
@@ -81,8 +78,7 @@ ModelLabels=person
 ; Catwalk camera
 [Camera-03]
 Enabled=no
-ModelDriver = max_object_detector
-ModelLocation = http://localhost:5000
+ModelDriver = Yolo
 TelegramChatId = DerbyshireChatId
 IncludeGif=no
 

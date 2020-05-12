@@ -1,39 +1,31 @@
 import os
 import cv2
+import sys
 import json
 import requests
-from ssd import ssd
-from yolo import yolo
+from models.ssd import Ssd
+from models.yolo import Yolo
 from settings import * 
 from dotenv import load_dotenv
 
+def resolveModel(name):
+    ''' Check if the driver is supported '''
+    if name not in ["Yolo", "Ssd"]:
+        raise Exception('Supported drivers for detection are Yolo and Ssd')
+    return name
+
 def get_predictions(camera_number, imagePath, threshold):
-    if camera_config(camera_number, "ModelDriver") == "max_object_detector":
-        url = camera_config(camera_number, "ModelLocation") + '/model/predict?threshold=' + str(threshold)
-        files = {'image': open(imagePath, 'rb')}
-        response = requests.post(url, files=files)
 
-        if response.status_code == 200:
-            # Predictions will be an empty array if nothing is found
-            return json.loads(response.content)['predictions']
-        else:
-            log(str(response), 'error')
-
-    if camera_config(camera_number, "ModelDriver") == "ssd":
-        response = ssd(imagePath, threshold)
-        if response["status"] == "ok":
-            # Predictions will be an empty array if nothing is found
-            return response["predictions"]
-        else:
-            log(str(response), 'error')
-
-    if camera_config(camera_number, "ModelDriver") == "yolo":
-        response = yolo(imagePath, threshold, threshold, camera_config(camera_number, "ModelLocation"))
-        if response["status"] == "ok":
-            # Predictions will be an empty array if nothing is found
-            return response["predictions"]
-        else:
-            log(str(response), 'error')
+    # The driver should be Yolo or Ssd
+    driver = camera_config(camera_number, "ModelDriver")
+    model = resolveModel(driver)
+    modelClass = getattr(sys.modules[__name__], model)()
+    response = modelClass.analyse(imagePath, threshold)
+    if response["status"] == "ok":
+        # Predictions will be an empty array if nothing is found
+        return response["predictions"]
+    else:
+        log(str(response), 'error')
 
 # Draw the bounding box around the objects found
 def draw_box(detection_box, label, img):
