@@ -91,7 +91,7 @@ def analyse_image(camera_number, path, output_path, attributes):
                 # generate the new path name
                 path = match_found = output_path + '/detected/' + os.path.basename(path)
                 attributes['payload'] = json.dumps(str(predictions))
-                attributes['confidence'] = round(prediction['probability'], 4)
+                attributes['confidence'] = float(round(prediction['probability'], 4))
                 attributes['object_label'] = prediction['label']
                 cv2.imwrite(path, img) 
 

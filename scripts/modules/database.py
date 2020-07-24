@@ -30,6 +30,7 @@ class Database:
                 user=config("Database.DbUsername"),
                 port=config("Database.DbPort"),
                 passwd=config("Database.DbPassword")
+                auth_plugin="mysql_native_password"
             )
             self.connection.set_converter_class(NumpyMySQLConverter)
 
