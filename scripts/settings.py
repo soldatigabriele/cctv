@@ -15,9 +15,9 @@ def config(key, type = "string"):
     """
     keys = str.split(key, ".")
     if type == "bool":
-        return configuration[keys[0]].getboolean(keys[1]);
+        return configuration[keys[0]].getboolean(keys[1])
     else:
-        return  configuration[keys[0]].get(keys[1]);
+        return  configuration[keys[0]].get(keys[1])
 
 def camera_config(camera, key, type = "string"):
     """Returns the config for a specific
@@ -27,9 +27,9 @@ def camera_config(camera, key, type = "string"):
     """
     camera = ("Camera-%s" % camera)
     if type == "bool":
-        return configuration[camera].getboolean(key);
+        return configuration[camera].getboolean(key)
     else:
-        return  configuration[camera].get(key);
+        return  configuration[camera].get(key)
 
 def listdir_nohidden(path):
     for f in os.listdir(path):
