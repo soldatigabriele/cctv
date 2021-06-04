@@ -63,3 +63,6 @@ virtualenv --python=python3.8 env
 pip3 install -r requirements.txt
 cd scripts && python3.8 main.py
 ```
+
+Drop a video file (moto.h264) in the folder `SourcePath=/Users/gabri/code/cctv/video/cctv/02/rec` to activate the recognition.
+You can set the first part of the path in the config file.
