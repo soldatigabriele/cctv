@@ -37,6 +37,22 @@ In order to scan the images for people, you need to have an object detection mod
 
 ## M1 Macbook
 
+```
+Python 3.8.10
+mysql  Ver 8.0.23 for osx10.16 on x86_64 (Homebrew)
+```
+
+Create user "cctv" identified by "password"
+
+```
+mysql -uroot
+CREATE USER 'cctv'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'cctv'@'localhost';
+ALTER USER 'cctv'@'localhost' IDENTIFIED BY 'password' PASSWORD EXPIRE NEVER;
+ALTER USER 'cctv'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+
+```
+
 ```bash
 # Install python 3.8
 arch -x86_64 arm brew install python@3.8
