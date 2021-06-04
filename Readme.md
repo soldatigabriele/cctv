@@ -34,3 +34,16 @@ Sample output:
 ## Prerequisites
 
 In order to scan the images for people, you need to have an object detection model available. There are adaptors in the `scripts/models` directory. Check those files if you want to use a different model. I'm using the caffe implementation of [MobileSSD](https://github.com/chuanqi305/MobileNet-SSD) for detections in the daylight, and [YOLO](https://pjreddie.com/darknet/yolo/).
+
+## M1 Macbook
+
+```bash
+# Install python 3.8
+arch -x86_64 arm brew install python@3.8
+# Add python3.8 to $PATH
+export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+# Create virtualenv
+virtualenv --python=python3.8 env
+pip3 install -r requirements.txt
+cd scripts && python3.8 main.py
+```
