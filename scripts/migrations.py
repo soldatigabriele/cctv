@@ -7,12 +7,12 @@ try:
         host=config("Database.DbHost"),
         user=config("Database.DbUsername"),
         port=config("Database.DbPort"),
-        passwd=config("Database.DbPassword")
-        auth_plugin="mysql_native_password"
+        passwd=config("Database.DbPassword"),
+        auth_plugin='mysql_native_password'
     )
-
 except:
     print("Error occurred while trying to connect with the database. Check the credentials in the .env")
+
 # Get a cursor
 try:
     cursor = connection.cursor()
