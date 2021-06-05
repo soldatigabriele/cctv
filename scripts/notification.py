@@ -6,9 +6,7 @@ import telegram
 import requests
 import datetime
 from settings import *
-from modules.database import Database
 
-database = Database()
 
 def send_message(camera_number, message="",):
     if config("General.NotificationDriver") == 'telegram':
@@ -28,7 +26,6 @@ def send_photo(camera_number, photo, caption=""):
         if photo is not None: 
             channel_name = camera_config(camera_number, "TelegramChatId")
             message = bot.send_photo(config("Telegram." + channel_name), photo=open(photo, 'rb'), caption=caption)
-            database.insertMessage(message)
     if config("General.NotificationDriver") == 'python':
         cv2.imshow('image', cv2.imread(photo))
     else:
@@ -44,7 +41,6 @@ def send_animation(camera_number, photo, caption=""):
                 channel_name = camera_config(camera_number, "TelegramChatId")
                 message = bot.send_animation(config("Telegram." + channel_name),
                                    animation=open(photo, 'rb'), caption=caption)
-                database.insertMessage(message)
             except:
                 msg = photo + "is too big to be sent"
                 log(msg)

@@ -80,6 +80,7 @@ def process():
             log('could not dump the attributes to array. Probably the attributes obj did not have the labels_found key', 'error')
 
         database.updateEvent(event_id, attributes)
+        database.close()
         return outcome, camera_number
     return None, None
 
@@ -92,19 +93,6 @@ def cleanup():
         if (current_time - creation_time) // (24 * 3600) >= int(config('General.KeepRecordsForDays')):
             shutil.rmtree(folder_path, ignore_errors=True)
             log('{} deleted as older than threshold'.format(folder_path), "info")
-    # Delete the messages older than 47h from Telegram chats
-    messages = database.getMessages()
-    for message_id in messages:
-        chat_id = messages[message_id]
-        log("deleting message {} from chat {} as older than 47h".format(message_id, chat_id), "info")
-        bot = telegram.Bot(token=config("Telegram.Token"))
-        try:
-            bot.delete_message(chat_id, message_id)
-        except telegram.error.BadRequest as error:
-            # If the message could not be found, log the warning, but continue
-            log(error, 'warning')
-        # Delete the record from the database
-        database.deleteMessage(message_id)
 
 
 # Start the loop

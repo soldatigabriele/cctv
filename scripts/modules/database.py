@@ -47,13 +47,6 @@ class Database:
         # Use the Database
         self.cursor.execute("USE cctv")
 
-    def insertMessage(self, message):
-        if self.connected:
-            self.cursor.execute(
-                "INSERT INTO messages (message_id, chat_id, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)", (message.message_id, message.chat.id))
-            self.connection.commit()
-            return
-
     def insertLog(self, event, description):
         if self.connected:
             self.cursor.execute(
@@ -77,22 +70,7 @@ class Database:
                 self.connection.commit()
             return True
 
-    def getMessages(self):
+    def close(self):
         if self.connected:
-            # ~47h (Telegram messages can be deleted within 48h)
-            timestamp = dt.now() - timedelta(minutes=2800)
-            query = "SELECT * FROM messages WHERE timestamp <= %s"
-            self.cursor.execute(query, [timestamp])
-            messages = {}
-            for id, chat_id, message_id, timestamp in self.cursor:
-
-                messages[message_id] = chat_id
-
-            return messages
-
-    def deleteMessage(self, message_id):
-        if self.connected:
-            # Delete the message from the database
-            query = "DELETE FROM messages WHERE message_id = %s"
-            self.cursor.execute(query, [message_id])
-            self.connection.commit()
+            self.cursor.close()
+            self.connected = False

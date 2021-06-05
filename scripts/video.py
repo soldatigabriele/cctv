@@ -55,7 +55,7 @@ def prepare_video(video, output_folder, event_id):
     frames = get_list_of_files(frames_folder)
     frames.sort(key=lambda f: os.path.getmtime(f))
 
-    # Remove black frames frow camera 03
+    # Remove black frames from camera 03
     if camera_number == "03":
         for frame in frames:
             img = cv2.imread(frame)
